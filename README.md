@@ -1,6 +1,6 @@
 # Reste-Küche
 
-Antippen, was im Kühlschrank ist, und Rezepte bekommen, die genau daraus etwas machen: zuerst die, für die alles da ist, dann die, bei denen eine Zutat fehlt. 40 Restenrezepte aus der Berufspraxis eines Kochs (Fotzelschnitten, gebratener Reis, Rösti vom Vortag, Pasta-Frittata, Käsesuppe, Bananenbrot, Panzanella …), jedes mit dem Tipp, der es gelingen lässt. Titel in DE/EN/SK, Rezepte auf Deutsch. Kein Tracking, keine Datenbank, alles in einer Datei.
+Antippen, was im Kühlschrank ist, und Rezepte bekommen, die genau daraus etwas machen: zuerst die, für die alles da ist, dann die, bei denen eine Zutat fehlt. 40 Restenrezepte aus der Berufspraxis eines Kochs (Fotzelschnitten, gebratener Reis, Rösti vom Vortag, Pasta-Frittata, Käsesuppe, Bananenbrot, Panzanella …), jedes mit dem Tipp, der es gelingen lässt. Titel in DE/EN, Rezepte auf Deutsch. Kein Tracking, keine Datenbank, alles in einer Datei.
 
 Live: **https://richardcervenka111-create.github.io/reste-kueche/**
 

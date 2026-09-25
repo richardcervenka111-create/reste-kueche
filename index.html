@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reste-Küche</title>
+<meta name="description" content="Antippen, was im Kühlschrank ist, und Rezepte bekommen, die genau daraus etwas machen. 40 Restenrezepte vom Koch, für Foodwaste null. Kein Tracking.">
+<style>
+:root{--bg:#2b1d12;--card:#3a2819;--line:#573d29;--txt:#fbf4ec;--mut:#d6bfa8;--acc:#ffb347;--ok:#7ee2a8}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:17px/1.5 -apple-system,system-ui,sans-serif}
+main{max-width:720px;margin:0 auto;padding:16px 16px 40px}
+h1{font-size:24px;margin:8px 0 2px}.sub{color:var(--mut);font-size:14px;margin-bottom:10px}
+.lang{float:right}.lang button{background:none;border:1px solid var(--line);color:var(--mut);border-radius:8px;padding:4px 8px;font-size:13px;cursor:pointer}.lang button[aria-pressed="true"]{background:var(--acc);color:#321;border-color:var(--acc)}
+h2{font-size:15px;margin:14px 0 6px;color:var(--acc);text-transform:uppercase;letter-spacing:.05em}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{background:var(--card);color:var(--txt);border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:14px;cursor:pointer;min-height:38px}
+.chips button[aria-pressed="true"]{background:var(--ok);color:#062;border-color:var(--ok);font-weight:600}
+.cnt{font-size:14px;color:var(--mut);margin:14px 0 6px}
+.r{background:var(--card);border:1px solid var(--line);border-radius:12px;margin:8px 0;overflow:hidden}
+.r summary{cursor:pointer;list-style:none;padding:12px 14px;display:flex;gap:10px;align-items:center;font-weight:600}
+.r summary::-webkit-details-marker{display:none}
+.r .t{margin-left:auto;font-size:12px;color:var(--mut);white-space:nowrap}
+.r .miss{font-size:12px;color:var(--acc);font-weight:400}
+.r .b{padding:0 14px 14px;font-size:15px}.r .b p{margin:6px 0}.r .b .tip{border-left:3px solid var(--acc);padding-left:10px;color:var(--mut);margin-top:8px}
+.r .ing{font-size:13px;color:var(--mut)}
+.foot{color:var(--mut);font-size:13px;margin-top:26px;border-top:1px solid var(--line);padding-top:10px}.foot a{color:var(--acc)}
+button.clr{background:none;border:1px solid var(--line);color:var(--mut);border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer;margin-left:8px}
+</style>
+</head>
+<body>
+<main>
+<div class="lang" role="group"><button data-l="de" aria-pressed="true">DE</button><button data-l="en" aria-pressed="false">EN</button><button data-l="sk" aria-pressed="false">SK</button></div>
+<h1 id="h"></h1><div class="sub" id="s"></div>
+<h2 id="hi"></h2><div class="chips" id="ing"></div>
+<div class="cnt"><span id="cnt"></span><button class="clr" id="clr"></button></div>
+<div id="list"></div>
+<div class="foot" id="foot"></div>
+</main>
+<script>
+(function(){
+// Zutaten: id → [de, en, sk]
+const I={brot:["Altes Brot","Stale bread","Starý chlieb"],reis:["Reis gekocht","Cooked rice","Uvarená ryža"],pasta:["Teigwaren gekocht","Cooked pasta","Uvarené cestoviny"],kart:["Kartoffeln gekocht","Cooked potatoes","Uvarené zemiaky"],kartroh:["Kartoffeln roh","Raw potatoes","Surové zemiaky"],rueebli:["Rüebli","Carrots","Mrkva"],zwiebel:["Zwiebel","Onion","Cibuľa"],knoblauch:["Knoblauch","Garlic","Cesnak"],eier:["Eier","Eggs","Vajcia"],milch:["Milch","Milk","Mlieko"],joghurt:["Joghurt","Yoghurt","Jogurt"],hartkaese:["Hartkäse-Rest","Hard cheese ends","Zvyšok tvrdého syra"],weichkaese:["Weichkäse / Frischkäse","Soft cheese","Mäkký syr"],poulet:["Poulet-Rest","Leftover chicken","Zvyšok kuraťa"],fleisch:["Fleisch-Rest","Leftover meat","Zvyšok mäsa"],gemuese:["Gemüsereste gemischt","Mixed vegetable scraps","Zvyšky zeleniny"],salat:["Welker Salat","Wilted salad","Zvädnutý šalát"],tomaten:["Weiche Tomaten","Soft tomatoes","Mäkké paradajky"],bananen:["Braune Bananen","Brown bananas","Hnedé banány"],aepfel:["Runzlige Äpfel","Wrinkly apples","Scvrknuté jablká"],kraeuter:["Kräuter","Herbs","Bylinky"],kabis:["Kabis","Cabbage","Kapusta"],lauch:["Lauch","Leek","Pór"],zucchetti:["Zucchetti","Courgette","Cuketa"],spinat:["Spinat","Spinach","Špenát"],pilze:["Pilze","Mushrooms","Huby"],huelsen:["Linsen / Bohnen (Dose)","Lentils / beans (tin)","Šošovica / fazuľa (konzerva)"],rahm:["Rahm","Cream","Smotana"],butter:["Butter","Butter","Maslo"],zitrone:["Zitrone","Lemon","Citrón"],speck:["Speck / Wurst","Bacon / sausage","Slanina / klobása"],fisch:["Fisch-Rest","Leftover fish","Zvyšok ryby"],kuerbis:["Kürbis","Pumpkin","Tekvica"],mehl:["Mehl","Flour","Múka"],oel:["Öl","Oil","Olej"],senf:["Senf","Mustard","Horčica"],bouillon:["Bouillon","Stock","Bujón"],nuesse:["Nüsse","Nuts","Orechy"],sauermilch:["Saure Milch / Buttermilch","Sour milk / buttermilk","Kyslé mlieko / cmar"]};
+// Rezepte: [de-name, en-name, sk-name, must[], nice[], minuten, text, tipp]
+const R=[
+ ["Fotzelschnitten","French toast, Bernese","Chlieb vo vajci",["brot","eier","milch"],["butter","zitrone"],15,"Brotscheiben in Milch-Ei-Mischung (2 Eier, 2 dl Milch, Prise Salz, etwas Zucker) tränken, in Butter goldbraun braten. Mit Zimtzucker oder Apfelmus.","Altes Brot saugt besser als frisches. Dicke Scheiben, Mittelhitze, Geduld."],
+ ["Panzanella","Bread salad","Chlebový šalát",["brot","tomaten","oel"],["zwiebel","kraeuter","knoblauch"],15,"Brot in Würfeln im Ofen rösten, mit weichen Tomaten, roter Zwiebel, Olivenöl, Essig, Salz mischen, 20 Minuten ziehen lassen.","Die Tomaten müssen saftig sein, darum sind die weichen ideal."],
+ ["Brotsuppe","Bread soup","Chlebová polievka",["brot","bouillon","zwiebel"],["hartkaese","eier","knoblauch"],25,"Zwiebel in Butter, Brotwürfel dazu, mit Bouillon aufgiessen, 15 Minuten köcheln, pürieren oder rustikal lassen. Käse darüber, unter dem Grill gratinieren.","Ein Ei am Schluss einrühren macht sie sämig."],
+ ["Croûtons und Paniermehl","Croutons and breadcrumbs","Krutóny a strúhanka",["brot"],["oel","knoblauch","kraeuter"],10,"Würfel mit Öl, Salz, Knoblauch bei 180 °C 10 Minuten. Der Rest ganz trocken, im Mixer: Paniermehl, hält Monate.","Das ist die Grundregel: Brot wird nie weggeworfen, es wird kleiner."],
+ ["Gebratener Reis","Fried rice","Smažená ryža",["reis","eier","zwiebel"],["gemuese","poulet","speck","knoblauch"],15,"Kalter Reis ist Pflicht. Zwiebel und Reste scharf anbraten, Reis dazu, Ei an den Rand stossen, stocken lassen, alles mischen, Sojasauce.","Reis vom Vortag hat die richtige Trockenheit; frischer wird Brei. Reste nur vom Vortag, danach weg."],
+ ["Reis-Tätschli","Rice patties","Ryžové placky",["reis","eier","hartkaese"],["kraeuter","zwiebel","spinat"],20,"Reis, Ei, geriebener Käse, Salz, Kräuter mischen, Tätschli formen, in Öl beidseitig knusprig braten.","Wenn die Masse zerfällt: ein Löffel Mehl."],
+ ["Milchreis","Rice pudding","Mliečna ryža",["reis","milch"],["butter","aepfel","zitrone"],15,"Gekochten Reis mit Milch, etwas Zucker, Vanille 10 Minuten köcheln bis cremig. Mit Apfelkompott.","Aus gekochtem Reis geht es doppelt so schnell wie aus rohem."],
+ ["Pasta-Frittata","Pasta frittata","Cestovinová frittata",["pasta","eier","hartkaese"],["speck","kraeuter","zwiebel"],20,"4 Eier, Käse, Salz, Pfeffer verquirlen, mit den Teigwaren mischen, in der Pfanne in Öl langsam stocken lassen, wenden oder im Ofen fertig.","Der Klassiker aus Neapel, erfunden genau für Pasta-Reste."],
+ ["Pasta al forno","Baked pasta","Zapekané cestoviny",["pasta","hartkaese"],["tomaten","gemuese","rahm","fleisch"],30,"Teigwaren mit Sauce (Tomaten oder Rahm) und Resten mischen, Käse drüber, 20 Minuten bei 200 °C.","Trockene Pasta vom Vortag braucht mehr Sauce als frische."],
+ ["Rösti aus gekochten Kartoffeln","Rösti","Rösti",["kart","butter"],["speck","zwiebel","hartkaese"],25,"Kartoffeln vom Vortag grob raffeln, salzen, in Butter bei mittlerer Hitze 10 Minuten pro Seite, nicht rühren.","Kartoffeln vom Vortag sind die Bedingung: frisch gekocht wird die Rösti Brei."],
+ ["Kartoffelsalat","Potato salad","Zemiakový šalát",["kart","zwiebel","senf"],["bouillon","speck","kraeuter","joghurt"],15,"Kartoffeln in Scheiben, lauwarm mit heisser Bouillon, Essig, Senf, Öl, Zwiebel mischen, 30 Minuten ziehen lassen.","Die Bouillon muss heiss auf die lauwarmen Kartoffeln, dann saugen sie."],
+ ["Kartoffel-Tätschli","Potato cakes","Zemiakové placky",["kart","eier","mehl"],["hartkaese","kraeuter","spinat"],20,"Kartoffeln zerdrücken, Ei, 2 EL Mehl, Salz, Käse, formen, braten.","Mit Spinat oder Lauch drin wird es ein ganzes Essen."],
+ ["Rüebli-Suppe","Carrot soup","Mrkvová polievka",["rueebli","zwiebel","bouillon"],["rahm","kartroh","zitrone"],30,"Zwiebel anschwitzen, Rüebli in Stücken, Bouillon, 20 Minuten, pürieren, Rahm, Zitrone.","Weiche, runzlige Rüebli sind für Suppe genauso gut wie frische."],
+ ["Rüebli-Kuchen","Carrot cake","Mrkvový koláč",["rueebli","eier","mehl"],["nuesse","zitrone","butter"],60,"250 g geraffelte Rüebli, 4 Eier, 200 g Zucker, 250 g Mehl (oder halb Nüsse), 1 Päckli Backpulver, 1 dl Öl, Zitronenschale. 50 Minuten bei 180 °C.","Der Aargauer Rüeblikuchen ist ein Restenrezept, das keiner so nennt."],
+ ["Zwiebelsuppe","Onion soup","Cibuľová polievka",["zwiebel","bouillon","butter"],["brot","hartkaese"],45,"Viele Zwiebeln in Butter 30 Minuten ganz langsam goldbraun, nie schwarz. Bouillon, 15 Minuten. Brotscheibe und Käse drauf, gratinieren.","Die Geduld beim Zwiebeln ist das ganze Rezept."],
+ ["Omelette mit allem","Omelette with everything","Omeleta so všetkým",["eier"],["gemuese","hartkaese","kraeuter","speck","pilze","spinat"],10,"3 Eier verquirlen, Reste vorher in der Pfanne anbraten, Eier drüber, bei mittlerer Hitze stocken lassen, zusammenklappen.","Das schnellste Restenrezept der Welt. Alles, was gekocht ist, passt rein."],
+ ["Rührei mit welkem Grün","Scrambled eggs with wilted greens","Praženica so zeleninou",["eier","spinat"],["butter","hartkaese","zwiebel"],10,"Spinat oder Blattgrün in Butter zusammenfallen lassen, Eier dazu, langsam rühren, früh vom Feuer.","Welke Blätter sind zum Kochen noch perfekt, nur zum Rohessen nicht mehr."],
+ ["Pancakes aus saurer Milch","Sour milk pancakes","Lievance z kyslého mlieka",["sauermilch","mehl","eier"],["butter","bananen","aepfel"],20,"2 dl saure Milch, 1 Ei, 120 g Mehl, 1 TL Backpulver, Prise Salz und Zucker. Kleine Fladen in Butter.","Säuerliche (nicht bittere) Milch macht die luftigsten Pancakes, das ist Chemie mit dem Backpulver."],
+ ["Joghurt-Dressing","Yoghurt dressing","Jogurtový dresing",["joghurt","zitrone"],["kraeuter","knoblauch","senf","oel"],5,"Joghurt, Zitronensaft, Salz, Pfeffer, Kräuter, etwas Öl. Hält 3 Tage im Kühlschrank.","Rettet auch den Salat, der schon müde ist: 20 Minuten Eiswasser, dann Dressing."],
+ ["Käsesuppe","Cheese soup","Syrová polievka",["hartkaese","milch","brot"],["zwiebel","butter","bouillon"],20,"Zwiebel in Butter, Milch und etwas Bouillon, geriebene Käsereste einrühren bis geschmolzen, Brotwürfel dazu.","Alle Käseränder gehen rein, auch die harten Stücke: reiben oder mixen."],
+ ["Käse-Wähe","Cheese tart","Syrový koláč",["hartkaese","eier","milch"],["mehl","butter","speck","zwiebel"],45,"Teig (oder gekauft), Käse darauf, Guss aus 2 Eiern, 2 dl Milch, Salz, Muskat. 30 Minuten bei 200 °C.","Das Berner Rezept gegen Käsereste seit Jahrhunderten."],
+ ["Frischkäse-Aufstrich","Soft cheese spread","Nátierka z mäkkého syra",["weichkaese","kraeuter"],["knoblauch","zitrone","rueebli"],5,"Frischkäse mit gehackten Kräutern, Salz, Zitrone, wenn da geraffelte Rüebli. Aufs Brot oder als Dip.","Weichkäse, der langsam zu Ende geht, hier schmeckt er nach mehr."],
+ ["Poulet-Salat","Chicken salad","Kurací šalát",["poulet","joghurt"],["senf","salat","aepfel","nuesse","zitrone"],10,"Poulet zerzupfen, mit Joghurt, Senf, Salz, Pfeffer, Apfelwürfeln und Nüssen mischen.","Rest-Poulet vom Vortag, gut gekühlt; am zweiten Tag essen."],
+ ["Poulet-Bouillon aus dem Gerippe","Chicken stock from the carcass","Vývar z kostry",["poulet","zwiebel","rueebli"],["lauch","kraeuter"],90,"Gerippe und Reste mit Zwiebel, Rüebli, Lauch in kaltem Wasser aufsetzen, 90 Minuten leise köcheln, abseihen. Einfrieren in Portionen.","Ein Poulet, drei Mahlzeiten: Braten, Salat, Suppe."],
+ ["Hackbraten-Tätschli aus Fleischrest","Meat patties","Mäsové placky",["fleisch","eier","brot"],["zwiebel","senf","kraeuter"],25,"Fleischreste fein hacken, mit eingeweichtem Brot, Ei, Zwiebel, Senf, Salz mischen, Tätschli braten.","Fleischreste nur bis 2 Tage nach dem Kochen und immer durchgebraten."],
+ ["Gemüse-Curry","Vegetable curry","Zeleninové kari",["gemuese","zwiebel"],["huelsen","reis","joghurt","knoblauch"],30,"Zwiebel und Knoblauch anbraten, Curry-Pulver kurz mitrösten, Gemüsereste dazu, Wasser oder Kokosmilch, 15 Minuten. Mit Linsen sättigender.","Egal welches Gemüse, das Curry macht daraus eine Familie."],
+ ["Gemüse-Bouillon aus Abschnitten","Vegetable stock from scraps","Zeleninový vývar z odrezkov",["gemuese"],["zwiebel","lauch","kraeuter"],40,"Schalen, Strünke, Lauchgrün, Kräuterstiele in einem Beutel im Gefrierer sammeln; wenn voll, 40 Minuten köcheln, abseihen.","Der Abfall-Beutel im Tiefkühler ist der beste Trick der Profiküche."],
+ ["Minestrone","Minestrone","Minestrone",["gemuese","bouillon","zwiebel"],["huelsen","pasta","hartkaese","tomaten","kabis"],40,"Zwiebel, dann alles Gemüse in kleinen Würfeln, Bouillon, 25 Minuten, Bohnen und Pasta-Rest zum Schluss, Käse drüber.","Reihenfolge: Hartes zuerst, Weiches zuletzt."],
+ ["Ofengemüse","Roast vegetables","Pečená zelenina",["gemuese","oel"],["kraeuter","knoblauch","kuerbis","rueebli"],35,"Alles in ähnlich grosse Stücke, Öl, Salz, Kräuter, 200 °C, 30 Minuten, einmal wenden.","Weiches Gemüse wird im Ofen süss statt matschig."],
+ ["Tomatensauce auf Vorrat","Tomato sauce for the freezer","Paradajková omáčka do zásoby",["tomaten","zwiebel","oel"],["knoblauch","kraeuter"],40,"Zwiebel und Knoblauch in Öl, weiche Tomaten grob geschnitten dazu, Salz, 30 Minuten offen köcheln, pürieren. Einfrieren.","Je weicher die Tomaten, desto besser die Sauce."],
+ ["Bananenbrot","Banana bread","Banánový chlieb",["bananen","eier","mehl"],["butter","nuesse","joghurt"],60,"3 braune Bananen zerdrücken, 2 Eier, 80 g Zucker, 80 g Butter, 200 g Mehl, 1 TL Natron, Prise Salz, Nüsse. 50 Minuten bei 175 °C.","Je brauner die Banane, desto süsser das Brot. Ganz schwarze sind die besten."],
+ ["Bananen-Glace","Banana ice cream","Banánová zmrzlina",["bananen"],["joghurt","nuesse"],5,"Bananen in Stücken einfrieren, gefroren mixen bis cremig. Fertig.","Eine Zutat, eine Minute, und die Bananen sind gerettet."],
+ ["Apfelkompott","Apple compote","Jablkový kompót",["aepfel"],["zitrone","butter"],20,"Äpfel geschält in Stücken mit wenig Wasser, Zitrone, etwas Zucker 15 Minuten köcheln. Kalt oder warm.","Runzlige Äpfel haben konzentrierteres Aroma als frische."],
+ ["Apfel-Wähe","Apple tart","Jablkový koláč",["aepfel","eier","milch"],["mehl","butter","nuesse"],45,"Teig, Apfelschnitze darauf, Guss aus 2 Eiern, 2 dl Milch, 2 EL Zucker, gemahlene Nüsse auf den Boden. 35 Minuten bei 200 °C.","Die Nüsse auf dem Boden saugen den Saft, der Teig bleibt knusprig."],
+ ["Kräuter-Pesto","Herb pesto","Bylinkové pesto",["kraeuter","oel"],["nuesse","hartkaese","knoblauch","zitrone"],10,"Kräuter (auch Rüebligrün, Radieschenblätter), Nüsse, Käse, Knoblauch, Öl, Salz mixen. Mit Öl bedeckt hält es eine Woche.","Pesto ist kein Basilikum-Rezept, sondern ein Methode für jedes Grün."],
+ ["Kabis-Pfanne","Cabbage skillet","Kapusta na panvici",["kabis","zwiebel","butter"],["speck","kart","senf"],25,"Kabis in Streifen, Zwiebel, in Butter 20 Minuten mit Deckel weich dünsten, Salz, Kümmel. Mit Speck oder Kartoffeln.","Kabis ist das billigste Gemüse des Winters und hält Wochen."],
+ ["Lauch-Gratin","Leek gratin","Zapekaný pór",["lauch","rahm","hartkaese"],["kart","speck","eier"],35,"Lauch in Ringen kurz dünsten, mit Rahm, Salz, Muskat in eine Form, Käse drüber, 20 Minuten bei 200 °C.","Der grüne Teil des Lauchs ist genauso gut, nur länger kochen."],
+ ["Zucchetti-Tätschli","Courgette fritters","Cuketové placky",["zucchetti","eier","mehl"],["hartkaese","kraeuter","joghurt"],25,"Zucchetti raffeln, salzen, 15 Minuten ziehen lassen, ausdrücken. Mit Ei, 3 EL Mehl, Käse mischen, kleine Tätschli braten. Joghurt-Dip.","Das Ausdrücken ist der ganze Trick, sonst schwimmen sie."],
+ ["Pilz-Rahmsauce","Mushroom cream sauce","Hubová smotanová omáčka",["pilze","rahm","zwiebel"],["pasta","kraeuter","knoblauch"],20,"Pilze heiss anbraten ohne Rühren, Zwiebel dazu, Rahm, 5 Minuten einkochen, Salz, Pfeffer, Kräuter. Auf Pasta oder Rösti.","Pilze brauchen heisse Pfanne und Platz, sonst kochen sie statt zu braten."],
+ ["Linsen-Salat","Lentil salad","Šošovicový šalát",["huelsen","zwiebel","senf"],["rueebli","kraeuter","zitrone","oel"],10,"Dosenlinsen abspülen, mit Zwiebel, Senf-Vinaigrette, Rüebli-Würfeln, Kräutern mischen. Hält 3 Tage.","Die Dose im Schrank ist die Sicherheit für den Tag, an dem sonst nichts da ist."],
+ ["Kürbissuppe","Pumpkin soup","Tekvicová polievka",["kuerbis","zwiebel","bouillon"],["rahm","kartroh","nuesse"],35,"Zwiebel anschwitzen, Kürbis in Würfeln, Bouillon, 20 Minuten, pürieren, Rahm. Kerne rösten und darüber.","Hokkaido mit Schale kochen, sie wird weich."],
+ ["Fisch-Tätschli","Fish cakes","Rybie placky",["fisch","kart","eier"],["kraeuter","zitrone","senf"],20,"Fischreste zerpflücken, mit zerdrückten Kartoffeln, Ei, Kräutern, Zitrone mischen, formen, in Öl braten.","Fischreste nur vom Vortag, gut gekühlt, dann durchgebraten."],
+ ["Speck-Zwiebel-Wähe","Bacon and onion tart","Slaninový koláč",["speck","zwiebel","eier"],["milch","rahm","hartkaese","mehl"],45,"Zwiebeln und Speck anbraten, auf Teig, Guss aus Eiern, Milch/Rahm, Salz, Pfeffer. 30 Minuten bei 200 °C.","Wurst-Endstücke, Speckrinde, alles kommt in die Wähe."],
+ ["Salat-Suppe","Lettuce soup","Šalátová polievka",["salat","zwiebel","bouillon"],["kart","rahm","butter"],20,"Zwiebel in Butter, welken Salat grob dazu, Bouillon, 10 Minuten, pürieren, Rahm. Ja, wirklich.","Franzosen kochen Salat seit immer; welker Salat ist dafür genau richtig."],
+];
+const L={
+ de:{h:"Reste-Küche",s:"Antippen, was da ist. Es erscheinen Rezepte, die daraus etwas machen: zuerst die, für die alles da ist, dann die, bei denen eine Zutat fehlt.",hi:"Was ist im Kühlschrank?",cnt:(a,b)=>`${a} Rezepte passen ganz, ${b} fast`,clr:"alles abwählen",min:"Min.",miss:"fehlt:",tip:"Tipp vom Koch",all:"Wähle Zutaten, oder stöbere:",
+   foot:'40 Restenrezepte aus der Berufspraxis eines Kochs, Mengen für 2 bis 4. Reste vom Vortag gekühlt lagern und gut erhitzen; Reis, Fleisch, Fisch nach 1 bis 2 Tagen nicht mehr. Kein Tracking. <a href="https://github.com/richardcervenka111-create/reste-kueche">GitHub</a> · MIT'},
+ en:{h:"Leftover kitchen",s:"Tap what you have. Recipes appear that make something of it: first the ones with everything in, then the ones missing one ingredient.",hi:"What is in the fridge?",cnt:(a,b)=>`${a} recipes fit completely, ${b} nearly`,clr:"clear all",min:"min",miss:"missing:",tip:"Chef’s tip",all:"Pick ingredients, or browse:",
+   foot:'40 leftover recipes from a chef’s practice, quantities for 2 to 4. Recipes are in German (measures and steps stay exact); titles translated. Keep leftovers chilled and reheat thoroughly; rice, meat, fish no longer after 1 to 2 days. No tracking. <a href="https://github.com/richardcervenka111-create/reste-kueche">GitHub</a> · MIT'},
+ sk:{h:"Kuchyňa zo zvyškov",s:"Ťukni na to, čo máš. Objavia sa recepty, ktoré z toho niečo spravia: najprv tie, na ktoré máš všetko, potom tie, kde chýba jedna surovina.",hi:"Čo je v chladničke?",cnt:(a,b)=>`${a} receptov sedí úplne, ${b} takmer`,clr:"zrušiť výber",min:"min",miss:"chýba:",tip:"Tip od kuchára",all:"Vyber suroviny alebo listuj:",
+   foot:'40 receptov zo zvyškov z praxe kuchára, množstvá pre 2 až 4. Recepty sú v nemčine (miery a postupy ostávajú presné); názvy preložené. Zvyšky chladiť a poriadne zohriať; ryža, mäso, ryba po 1 až 2 dňoch už nie. Žiadne sledovanie. <a href="https://github.com/richardcervenka111-create/reste-kueche">GitHub</a> · MIT'}};
+let lang="de"; const have=new Set(); const $=id=>document.getElementById(id); const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const li=(id)=>I[id][lang==="de"?0:lang==="en"?1:2]; const rn=(r)=>r[lang==="de"?0:lang==="en"?1:2];
+function render(){ const T=L[lang]; document.documentElement.lang=lang; document.title=T.h; $("h").textContent=T.h; $("s").textContent=T.s; $("hi").textContent=T.hi; $("clr").textContent=T.clr; $("foot").innerHTML=T.foot;
+  const ch=$("ing"); ch.innerHTML=""; Object.keys(I).forEach(id=>{ const b=document.createElement("button"); b.textContent=li(id); b.setAttribute("aria-pressed",have.has(id)?"true":"false"); b.onclick=()=>{ have.has(id)?have.delete(id):have.add(id); render(); }; ch.appendChild(b); });
+  let full=[],near=[];
+  R.forEach(r=>{ const miss=r[3].filter(x=>!have.has(x)); const nice=r[4].filter(x=>have.has(x)).length; if(have.size===0){ full.push([r,[],0]); return; } if(miss.length===0) full.push([r,[],nice]); else if(miss.length===1) near.push([r,miss,nice]); });
+  full.sort((a,b)=>b[2]-a[2]); near.sort((a,b)=>b[2]-a[2]);
+  $("cnt").textContent=have.size?T.cnt(full.length,near.length):T.all;
+  const card=([r,miss])=>`<details class="r"><summary>${esc(rn(r))}${miss.length?`<span class="miss">${T.miss} ${miss.map(li).map(esc).join(", ")}</span>`:""}<span class="t">${r[5]} ${T.min}</span></summary><div class="b"><p class="ing">${r[3].map(li).map(esc).join(", ")}${r[4].length?" · + "+r[4].map(li).map(esc).join(", "):""}</p><p>${esc(r[6])}</p><p class="tip"><b>${T.tip}:</b> ${esc(r[7])}</p></div></details>`;
+  $("list").innerHTML=full.map(card).join("")+near.map(card).join("");
+  document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.l===lang?"true":"false")); }
+$("clr").addEventListener("click",()=>{have.clear(); render();});
+document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>{lang=b.dataset.l; render();}));
+render();
+})();
+</script>
+</body>
+</html>
